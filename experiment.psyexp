@@ -5,7 +5,7 @@
     <Param val="ptb" valType="str" updates="None" name="Audio lib"/>
     <Param val="" valType="str" updates="None" name="Completed URL"/>
     <Param val="auto" valType="str" updates="None" name="Data file delimiter"/>
-    <Param val="u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])" valType="code" updates="None" name="Data filename"/>
+    <Param val="u'data/%s_%s' % (expInfo['participant'], expInfo['date'])" valType="code" updates="None" name="Data filename"/>
     <Param val="True" valType="bool" updates="None" name="Enable Escape"/>
     <Param val="Thank you for your patience." valType="str" updates="None" name="End Message"/>
     <Param val="{'participant': 'f&quot;{randint(0, 999999):06.0f}&quot;', 'session': '001'}" valType="code" updates="None" name="Experiment info"/>
@@ -16,14 +16,14 @@
     <Param val="testMonitor" valType="str" updates="None" name="Monitor"/>
     <Param val="[]" valType="list" updates="None" name="Resources"/>
     <Param val="False" valType="bool" updates="None" name="Save csv file"/>
-    <Param val="False" valType="bool" updates="None" name="Save excel file"/>
+    <Param val="True" valType="bool" updates="None" name="Save excel file"/>
     <Param val="False" valType="bool" updates="None" name="Save hdf5 file"/>
     <Param val="True" valType="bool" updates="None" name="Save log file"/>
     <Param val="True" valType="bool" updates="None" name="Save psydat file"/>
     <Param val="True" valType="bool" updates="None" name="Save wide csv file"/>
     <Param val="1" valType="num" updates="None" name="Screen"/>
     <Param val="True" valType="bool" updates="None" name="Show info dlg"/>
-    <Param val="False" valType="bool" updates="None" name="Show mouse"/>
+    <Param val="True" valType="bool" updates="None" name="Show mouse"/>
     <Param val="height" valType="str" updates="None" name="Units"/>
     <Param val="" valType="str" updates="None" name="Use version"/>
     <Param val="[1680, 1050]" valType="list" updates="None" name="Window size (pixels)"/>
@@ -119,7 +119,7 @@
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
-        <Param val="Keep your hands on keys 'f' and 'j'.&amp;#10;Press 'f' to continue." valType="str" updates="constant" name="text"/>
+        <Param val="Welcome!&amp;#10;&amp;#10;In this experiment, you will see sentences with made-up words (e.g., &quot;blick&quot;).&amp;#10;After each sentence, choose the image that best matches the word.&amp;#10;&amp;#10;▶ Keyboard: Press F (left image) or J (right image)&amp;#10;▶ Mouse/Touch: Click directly on the image&amp;#10;&amp;#10;Press F, J, or click to begin." valType="str" updates="constant" name="text"/>
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
         <Param val="" valType="code" updates="None" name="validator"/>
         <Param val="" valType="num" updates="constant" name="wrapWidth"/>
@@ -144,6 +144,26 @@
         <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
       </KeyboardComponent>
+      <MouseComponent name="mouse_2" plugin="None">
+        <Param val="" valType="list" updates="constant" name="clickable"/>
+        <Param val="" valType="list" updates="constant" name="correctAns"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="any click" valType="str" updates="constant" name="forceEndRoutineOnPress"/>
+        <Param val="mouse_2" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="constant" name="newClicksOnly"/>
+        <Param val="on click" valType="str" updates="None" name="saveMouseState"/>
+        <Param val="name," valType="list" updates="constant" name="saveParamsClickable"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="mouse onset" valType="str" updates="constant" name="timeRelativeTo"/>
+      </MouseComponent>
     </Routine>
     <Routine name="trial">
       <RoutineSettingsComponent name="trial" plugin="None">
@@ -273,17 +293,37 @@
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="import random&amp;#10;&amp;#10;# Get trial info from CSV&amp;#10;word_text = word&amp;#10;article_cond = article&amp;#10;correct_type = correct_type&amp;#10;obj_image_name = obj_image&amp;#10;sub_image_name = sub_image&amp;#10;&amp;#10;# Build full image paths&amp;#10;obj_path = f&quot;obj/{obj_image_name}&quot;&amp;#10;sub_path = f&quot;subs/{sub_image_name}&quot;&amp;#10;&amp;#10;# Randomize left/right position&amp;#10;if random.random() &lt; 0.5:&amp;#10;    # Object on left, substance on right&amp;#10;    image_left.setImage(obj_path)&amp;#10;    image_right.setImage(sub_path)&amp;#10;    if correct_type == 'obj':&amp;#10;        correct_response = 'f'&amp;#10;    else:&amp;#10;        correct_response = 'j'&amp;#10;else:&amp;#10;    # Substance on left, object on right&amp;#10;    image_left.setImage(sub_path)&amp;#10;    image_right.setImage(obj_path)&amp;#10;    if correct_type == 'sub':&amp;#10;        correct_response = 'f'&amp;#10;    else:&amp;#10;        correct_response = 'j'&amp;#10;&amp;#10;# Build the sentence&amp;#10;if article_cond == 'a':&amp;#10;    sentence_text = f&quot;Look! A {word_text}.&quot;&amp;#10;else:&amp;#10;    sentence_text = f&quot;Look! {word_text}.&quot;&amp;#10;&amp;#10;sentence.setText(sentence_text)&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="import random&amp;#10;&amp;#10;# Get values from CSV&amp;#10;word_text = word&amp;#10;article_cond = article&amp;#10;target = correct_type&amp;#10;obj_img = obj_image&amp;#10;sub_img = sub_image&amp;#10;phrase_type = phrase&amp;#10;trial_kind = trial_type&amp;#10;&amp;#10;# Build image paths&amp;#10;obj_path = f&quot;obj/{obj_img}&quot;&amp;#10;sub_path = f&quot;subs/{sub_img}&quot;&amp;#10;&amp;#10;# Randomize left/right position&amp;#10;if random.random() &lt; 0.5:&amp;#10;    image_left.setImage(obj_path)&amp;#10;    image_right.setImage(sub_path)&amp;#10;    if target == 'obj':&amp;#10;        correct_response = 'f'&amp;#10;    else:&amp;#10;        correct_response = 'j'&amp;#10;else:&amp;#10;    image_left.setImage(sub_path)&amp;#10;    image_right.setImage(obj_path)&amp;#10;    if target == 'sub':&amp;#10;        correct_response = 'f'&amp;#10;    else:&amp;#10;        correct_response = 'j'&amp;#10;&amp;#10;# Build the sentence based on phrase type&amp;#10;if phrase_type == 'look':&amp;#10;    if article_cond == 'a':&amp;#10;        sentence_text = f&quot;Look! A {word_text}.&quot;&amp;#10;    else:&amp;#10;        sentence_text = f&quot;Look! {word_text}.&quot;&amp;#10;elif phrase_type == 'there_is':&amp;#10;    if article_cond == 'a':&amp;#10;        sentence_text = f&quot;There is a {word_text}.&quot;&amp;#10;    else:&amp;#10;        sentence_text = f&quot;There is {word_text}.&quot;&amp;#10;elif phrase_type == 'that_is':&amp;#10;    if article_cond == 'a':&amp;#10;        sentence_text = f&quot;That is a {word_text}.&quot;&amp;#10;    else:&amp;#10;        sentence_text = f&quot;That is {word_text}.&quot;&amp;#10;&amp;#10;sentence.setText(sentence_text)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="// Randomize left/right position&amp;#10;if (Math.random() &lt; 0.5) {&amp;#10;    // Object on left, substance on right&amp;#10;    image_left.setImage({uri: &quot;obj/&quot; + obj_img});&amp;#10;    image_right.setImage({uri: &quot;subs/&quot; + sub_img});&amp;#10;    if (target == 'obj') {&amp;#10;        correct_response = 'f';&amp;#10;        correct_side = 'left';&amp;#10;    } else {&amp;#10;        correct_response = 'j';&amp;#10;        correct_side = 'right';&amp;#10;    }&amp;#10;} else {&amp;#10;    // Substance on left, object on right&amp;#10;    image_left.setImage({uri: &quot;subs/&quot; + sub_img});&amp;#10;    image_right.setImage({uri: &quot;obj/&quot; + obj_img});&amp;#10;    if (target == 'sub') {&amp;#10;        correct_response = 'f';&amp;#10;        correct_side = 'left';&amp;#10;    } else {&amp;#10;        correct_response = 'j';&amp;#10;        correct_side = 'right';&amp;#10;    }&amp;#10;}&amp;#10;&amp;#10;// Build the sentence based on phrase type&amp;#10;let sentence_text = &quot;&quot;;&amp;#10;if (phrase_type == 'look') {&amp;#10;    if (article_cond == 'a') {&amp;#10;        sentence_text = &quot;Look! A &quot; + word_text + &quot;.&quot;;&amp;#10;    } else {&amp;#10;        sentence_text = &quot;Look! &quot; + word_text + &quot;.&quot;;&amp;#10;    }&amp;#10;} else if (phrase_type == 'there_is') {&amp;#10;    if (article_cond == 'a') {&amp;#10;        sentence_text = &quot;There is a &quot; + word_text + &quot;.&quot;;&amp;#10;    } else {&amp;#10;        sentence_text = &quot;There is &quot; + word_text + &quot;.&quot;;&amp;#10;    }&amp;#10;} else if (phrase_type == 'that_is') {&amp;#10;    if (article_cond == 'a') {&amp;#10;        sentence_text = &quot;That is a &quot; + word_text + &quot;.&quot;;&amp;#10;    } else {&amp;#10;        sentence_text = &quot;That is &quot; + word_text + &quot;.&quot;;&amp;#10;    }&amp;#10;}&amp;#10;&amp;#10;sentence.setText(sentence_text);&amp;#10;&amp;#10;// Reset mouse clicks for this trial (if you have a mouse component)&amp;#10;if (typeof mouse !== 'undefined') {&amp;#10;    mouse.clickReset();&amp;#10;}" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Py" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="# Save trial variables&amp;#10;thisExp.addData('word', word_text)&amp;#10;thisExp.addData('article', article_cond)&amp;#10;thisExp.addData('phrase', phrase_type) &amp;#10;thisExp.addData('trial_type', trial_kind)&amp;#10;thisExp.addData('correct_type', target)&amp;#10;thisExp.addData('obj_image', obj_img)&amp;#10;thisExp.addData('sub_image', sub_img)&amp;#10;&amp;#10;# Save response data&amp;#10;thisExp.addData('response', key_resp.keys)&amp;#10;thisExp.addData('rt', key_resp.rt)&amp;#10;thisExp.addData('correct_response', correct_response)&amp;#10;&amp;#10;# Accuracy&amp;#10;if key_resp.keys is None:&amp;#10;    accuracy = 0&amp;#10;elif key_resp.keys == correct_response:&amp;#10;    accuracy = 1&amp;#10;else:&amp;#10;    accuracy = 0&amp;#10;&amp;#10;thisExp.addData('accuracy', accuracy)&amp;#10;thisExp.nextEntry()" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="// --- End Routine ---&amp;#10;&amp;#10;// Check for mouse click&amp;#10;let left_clicked = false;&amp;#10;let right_clicked = false;&amp;#10;if (typeof mouse !== 'undefined') {&amp;#10;    left_clicked = mouse.isPressedIn(image_left);&amp;#10;    right_clicked = mouse.isPressedIn(image_right);&amp;#10;}&amp;#10;&amp;#10;// Determine response from either keyboard or mouse&amp;#10;let response = null;&amp;#10;let rt = null;&amp;#10;let response_method = 'none';&amp;#10;&amp;#10;if (key_resp.keys !== null &amp;&amp; key_resp.keys !== undefined) {&amp;#10;    // Keyboard response was made&amp;#10;    response = key_resp.keys;&amp;#10;    rt = key_resp.rt;&amp;#10;    response_method = 'keyboard';&amp;#10;} else if (left_clicked) {&amp;#10;    // Mouse clicked on left image&amp;#10;    response = 'f';&amp;#10;    rt = mouse.getPressed()[2];&amp;#10;    response_method = 'mouse';&amp;#10;} else if (right_clicked) {&amp;#10;    // Mouse clicked on right image&amp;#10;    response = 'j';&amp;#10;    rt = mouse.getPressed()[2];&amp;#10;    response_method = 'mouse';&amp;#10;}&amp;#10;&amp;#10;// Calculate accuracy&amp;#10;let accuracy = 0;&amp;#10;if (response !== null) {&amp;#10;    if (response == correct_response) {&amp;#10;        accuracy = 1;&amp;#10;    } else {&amp;#10;        accuracy = 0;&amp;#10;    }&amp;#10;}&amp;#10;&amp;#10;// Save trial variables&amp;#10;psychoJS.experiment.addData('word', word_text);&amp;#10;psychoJS.experiment.addData('article', article_cond);&amp;#10;psychoJS.experiment.addData('phrase', phrase_type);&amp;#10;psychoJS.experiment.addData('trial_type', trial_kind);&amp;#10;psychoJS.experiment.addData('correct_type', target);&amp;#10;psychoJS.experiment.addData('obj_image', obj_img);&amp;#10;psychoJS.experiment.addData('sub_image', sub_img);&amp;#10;&amp;#10;// Save response data&amp;#10;psychoJS.experiment.addData('response', response);&amp;#10;psychoJS.experiment.addData('rt', rt);&amp;#10;psychoJS.experiment.addData('response_method', response_method);&amp;#10;psychoJS.experiment.addData('correct_response', correct_response);&amp;#10;psychoJS.experiment.addData('accuracy', accuracy);&amp;#10;&amp;#10;// Move to next trial&amp;#10;psychoJS.experiment.nextEntry();" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="logic" valType="code" updates="None" name="name"/>
       </CodeComponent>
+      <MouseComponent name="mouse" plugin="None">
+        <Param val="image_left, image_right" valType="list" updates="constant" name="clickable"/>
+        <Param val="" valType="list" updates="constant" name="correctAns"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="valid click" valType="str" updates="constant" name="forceEndRoutineOnPress"/>
+        <Param val="mouse" valType="code" updates="None" name="name"/>
+        <Param val="False" valType="bool" updates="constant" name="newClicksOnly"/>
+        <Param val="on click" valType="str" updates="None" name="saveMouseState"/>
+        <Param val="name," valType="list" updates="constant" name="saveParamsClickable"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="mouse onset" valType="str" updates="constant" name="timeRelativeTo"/>
+      </MouseComponent>
     </Routine>
     <Routine name="thankyou">
       <RoutineSettingsComponent name="thankyou" plugin="None">
@@ -324,7 +364,7 @@
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
-        <Param val="Thank you for participating in this experiment!&amp;#10;&amp;#10;Please press space or return to exit. " valType="str" updates="constant" name="text"/>
+        <Param val="Thank you for participating in this experiment!&amp;#10;&amp;#10;Please press space or return to exit, or click anywhere on the screen." valType="str" updates="constant" name="text"/>
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
         <Param val="" valType="code" updates="None" name="validator"/>
         <Param val="" valType="num" updates="constant" name="wrapWidth"/>
@@ -349,6 +389,26 @@
         <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
       </KeyboardComponent>
+      <MouseComponent name="mouse_3" plugin="None">
+        <Param val="" valType="list" updates="constant" name="clickable"/>
+        <Param val="" valType="list" updates="constant" name="correctAns"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="any click" valType="str" updates="constant" name="forceEndRoutineOnPress"/>
+        <Param val="mouse_3" valType="code" updates="None" name="name"/>
+        <Param val="True" valType="bool" updates="constant" name="newClicksOnly"/>
+        <Param val="on click" valType="str" updates="None" name="saveMouseState"/>
+        <Param val="name," valType="list" updates="constant" name="saveParamsClickable"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
+        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="mouse onset" valType="str" updates="constant" name="timeRelativeTo"/>
+      </MouseComponent>
     </Routine>
   </Routines>
   <Flow>

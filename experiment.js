@@ -1,4 +1,4 @@
-﻿/******************* 
+/******************* 
  * Experiment *
  *******************/
 
@@ -94,7 +94,7 @@ async function updateInfo() {
   
 
   
-  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["participant"]}_${expName}_${expInfo["date"]}`);
+  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["participant"]}_${expInfo["date"]}`);
   psychoJS.experiment.field_separator = '\t';
 
 
@@ -107,7 +107,7 @@ async function experimentInit() {
   Welcome = new visual.TextStim({
     win: psychoJS.window,
     name: 'Welcome',
-    text: "Keep your hands on keys 'f' and 'j'.\nPress 'f' to continue.",
+    text: 'Welcome!\n\nIn this experiment, you will see sentences with made-up words (e.g., "blick").\nAfter each sentence, choose the image that best matches the word.\n\n▶ Keyboard: Press F (left image) or J (right image)\n▶ Mouse/Touch: Click directly on the image\n\nPress F, J, or click to begin.',
     font: 'Arial',
     units: undefined, 
     pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
@@ -118,6 +118,10 @@ async function experimentInit() {
   
   start_key = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
+  mouse_2 = new core.Mouse({
+    win: psychoJS.window,
+  });
+  mouse_2.mouseClock = new util.Clock();
   // Initialize components for Routine "trial"
   trialClock = new util.Clock();
   sentence = new visual.TextStim({
@@ -200,12 +204,16 @@ async function experimentInit() {
   sentence.setText(sentence_text)
   
   
+  mouse = new core.Mouse({
+    win: psychoJS.window,
+  });
+  mouse.mouseClock = new util.Clock();
   // Initialize components for Routine "thankyou"
   thankyouClock = new util.Clock();
   thankyou_text = new visual.TextStim({
     win: psychoJS.window,
     name: 'thankyou_text',
-    text: 'Thank you for participating in this experiment!\n\nPlease press space or return to exit. ',
+    text: 'Thank you for participating in this experiment!\n\nPlease press space or return to exit, or click anywhere on the screen.',
     font: 'Arial',
     units: undefined, 
     pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
@@ -216,6 +224,10 @@ async function experimentInit() {
   
   end_key = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
+  mouse_3 = new core.Mouse({
+    win: psychoJS.window,
+  });
+  mouse_3.mouseClock = new util.Clock();
   // Create some handy timers
   globalClock = new util.Clock();  // to track the time since experiment started
   routineTimer = new util.CountdownTimer();  // to track time remaining of each (non-slip) routine
@@ -238,12 +250,22 @@ function instructionRoutineBegin(snapshot) {
     start_key.keys = undefined;
     start_key.rt = undefined;
     _start_key_allKeys = [];
+    // setup some python lists for storing info about the mouse_2
+    // current position of the mouse:
+    mouse_2.x = [];
+    mouse_2.y = [];
+    mouse_2.leftButton = [];
+    mouse_2.midButton = [];
+    mouse_2.rightButton = [];
+    mouse_2.time = [];
+    gotValidClick = false; // until a click is received
     psychoJS.experiment.addData('instruction.started', globalClock.getTime());
     instructionMaxDuration = null
     // keep track of which components have finished
     instructionComponents = [];
     instructionComponents.push(Welcome);
     instructionComponents.push(start_key);
+    instructionComponents.push(mouse_2);
     
     for (const thisComponent of instructionComponents)
       if ('status' in thisComponent)
@@ -294,6 +316,33 @@ function instructionRoutineEachFrame() {
       }
     }
     
+    // *mouse_2* updates
+    if (t >= 0.0 && mouse_2.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      mouse_2.tStart = t;  // (not accounting for frame time here)
+      mouse_2.frameNStart = frameN;  // exact frame index
+      
+      mouse_2.status = PsychoJS.Status.STARTED;
+      mouse_2.mouseClock.reset();
+      prevButtonState = mouse_2.getPressed();  // if button is down already this ISN'T a new click
+      }
+    if (mouse_2.status === PsychoJS.Status.STARTED) {  // only update if started and not finished!
+      _mouseButtons = mouse_2.getPressed();
+      if (!_mouseButtons.every( (e,i,) => (e == prevButtonState[i]) )) { // button state changed?
+        prevButtonState = _mouseButtons;
+        if (_mouseButtons.reduce( (e, acc) => (e+acc) ) > 0) { // state changed to a new click
+          _mouseXYs = mouse_2.getPos();
+          mouse_2.x.push(_mouseXYs[0]);
+          mouse_2.y.push(_mouseXYs[1]);
+          mouse_2.leftButton.push(_mouseButtons[0]);
+          mouse_2.midButton.push(_mouseButtons[1]);
+          mouse_2.rightButton.push(_mouseButtons[2]);
+          mouse_2.time.push(mouse_2.mouseClock.getTime());
+          // end routine on response
+          continueRoutine = false;
+        }
+      }
+    }
     // check for quit (typically the Esc key)
     if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
       return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
@@ -341,6 +390,14 @@ function instructionRoutineEnd(snapshot) {
         }
     
     start_key.stop();
+    // store data for psychoJS.experiment (ExperimentHandler)
+    psychoJS.experiment.addData('mouse_2.x', mouse_2.x);
+    psychoJS.experiment.addData('mouse_2.y', mouse_2.y);
+    psychoJS.experiment.addData('mouse_2.leftButton', mouse_2.leftButton);
+    psychoJS.experiment.addData('mouse_2.midButton', mouse_2.midButton);
+    psychoJS.experiment.addData('mouse_2.rightButton', mouse_2.rightButton);
+    psychoJS.experiment.addData('mouse_2.time', mouse_2.time);
+    
     // the Routine "instruction" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
@@ -424,6 +481,16 @@ function trialRoutineBegin(snapshot) {
     key_resp.keys = undefined;
     key_resp.rt = undefined;
     _key_resp_allKeys = [];
+    // setup some python lists for storing info about the mouse
+    // current position of the mouse:
+    mouse.x = [];
+    mouse.y = [];
+    mouse.leftButton = [];
+    mouse.midButton = [];
+    mouse.rightButton = [];
+    mouse.time = [];
+    mouse.clicked_name = [];
+    gotValidClick = false; // until a click is received
     psychoJS.experiment.addData('trial.started', globalClock.getTime());
     trialMaxDuration = null
     // keep track of which components have finished
@@ -432,6 +499,7 @@ function trialRoutineBegin(snapshot) {
     trialComponents.push(image_left);
     trialComponents.push(image_right);
     trialComponents.push(key_resp);
+    trialComponents.push(mouse);
     
     for (const thisComponent of trialComponents)
       if ('status' in thisComponent)
@@ -502,6 +570,51 @@ function trialRoutineEachFrame() {
       }
     }
     
+    // *mouse* updates
+    if (t >= 0.0 && mouse.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      mouse.tStart = t;  // (not accounting for frame time here)
+      mouse.frameNStart = frameN;  // exact frame index
+      
+      mouse.status = PsychoJS.Status.STARTED;
+      mouse.mouseClock.reset();
+      prevButtonState = [0, 0, 0];  // if now button is down we will treat as 'new' click
+      }
+    if (mouse.status === PsychoJS.Status.STARTED) {  // only update if started and not finished!
+      _mouseButtons = mouse.getPressed();
+      if (!_mouseButtons.every( (e,i,) => (e == prevButtonState[i]) )) { // button state changed?
+        prevButtonState = _mouseButtons;
+        if (_mouseButtons.reduce( (e, acc) => (e+acc) ) > 0) { // state changed to a new click
+          // check if the mouse was inside our 'clickable' objects
+          gotValidClick = false;
+          mouse.clickableObjects = eval([image_left, image_right])
+          ;// make sure the mouse's clickable objects are an array
+          if (!Array.isArray(mouse.clickableObjects)) {
+              mouse.clickableObjects = [mouse.clickableObjects];
+          }
+          // iterate through clickable objects and check each
+          for (const obj of mouse.clickableObjects) {
+              if (obj.contains(mouse)) {
+                  gotValidClick = true;
+                  mouse.clicked_name.push(obj.name);
+              }
+          }
+          if (!gotValidClick) {
+              mouse.clicked_name.push(null);
+          }
+          _mouseXYs = mouse.getPos();
+          mouse.x.push(_mouseXYs[0]);
+          mouse.y.push(_mouseXYs[1]);
+          mouse.leftButton.push(_mouseButtons[0]);
+          mouse.midButton.push(_mouseButtons[1]);
+          mouse.rightButton.push(_mouseButtons[2]);
+          mouse.time.push(mouse.mouseClock.getTime());
+          if (gotValidClick === true) { // end routine on response
+            continueRoutine = false;
+          }
+        }
+      }
+    }
     // check for quit (typically the Esc key)
     if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
       return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
@@ -549,6 +662,15 @@ function trialRoutineEnd(snapshot) {
         }
     
     key_resp.stop();
+    // store data for psychoJS.experiment (ExperimentHandler)
+    psychoJS.experiment.addData('mouse.x', mouse.x);
+    psychoJS.experiment.addData('mouse.y', mouse.y);
+    psychoJS.experiment.addData('mouse.leftButton', mouse.leftButton);
+    psychoJS.experiment.addData('mouse.midButton', mouse.midButton);
+    psychoJS.experiment.addData('mouse.rightButton', mouse.rightButton);
+    psychoJS.experiment.addData('mouse.time', mouse.time);
+    psychoJS.experiment.addData('mouse.clicked_name', mouse.clicked_name);
+    
     // the Routine "trial" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
@@ -575,12 +697,22 @@ function thankyouRoutineBegin(snapshot) {
     end_key.keys = undefined;
     end_key.rt = undefined;
     _end_key_allKeys = [];
+    // setup some python lists for storing info about the mouse_3
+    // current position of the mouse:
+    mouse_3.x = [];
+    mouse_3.y = [];
+    mouse_3.leftButton = [];
+    mouse_3.midButton = [];
+    mouse_3.rightButton = [];
+    mouse_3.time = [];
+    gotValidClick = false; // until a click is received
     psychoJS.experiment.addData('thankyou.started', globalClock.getTime());
     thankyouMaxDuration = null
     // keep track of which components have finished
     thankyouComponents = [];
     thankyouComponents.push(thankyou_text);
     thankyouComponents.push(end_key);
+    thankyouComponents.push(mouse_3);
     
     for (const thisComponent of thankyouComponents)
       if ('status' in thisComponent)
@@ -631,6 +763,33 @@ function thankyouRoutineEachFrame() {
       }
     }
     
+    // *mouse_3* updates
+    if (t >= 0.0 && mouse_3.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      mouse_3.tStart = t;  // (not accounting for frame time here)
+      mouse_3.frameNStart = frameN;  // exact frame index
+      
+      mouse_3.status = PsychoJS.Status.STARTED;
+      mouse_3.mouseClock.reset();
+      prevButtonState = mouse_3.getPressed();  // if button is down already this ISN'T a new click
+      }
+    if (mouse_3.status === PsychoJS.Status.STARTED) {  // only update if started and not finished!
+      _mouseButtons = mouse_3.getPressed();
+      if (!_mouseButtons.every( (e,i,) => (e == prevButtonState[i]) )) { // button state changed?
+        prevButtonState = _mouseButtons;
+        if (_mouseButtons.reduce( (e, acc) => (e+acc) ) > 0) { // state changed to a new click
+          _mouseXYs = mouse_3.getPos();
+          mouse_3.x.push(_mouseXYs[0]);
+          mouse_3.y.push(_mouseXYs[1]);
+          mouse_3.leftButton.push(_mouseButtons[0]);
+          mouse_3.midButton.push(_mouseButtons[1]);
+          mouse_3.rightButton.push(_mouseButtons[2]);
+          mouse_3.time.push(mouse_3.mouseClock.getTime());
+          // end routine on response
+          continueRoutine = false;
+        }
+      }
+    }
     // check for quit (typically the Esc key)
     if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
       return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
@@ -678,6 +837,14 @@ function thankyouRoutineEnd(snapshot) {
         }
     
     end_key.stop();
+    // store data for psychoJS.experiment (ExperimentHandler)
+    psychoJS.experiment.addData('mouse_3.x', mouse_3.x);
+    psychoJS.experiment.addData('mouse_3.y', mouse_3.y);
+    psychoJS.experiment.addData('mouse_3.leftButton', mouse_3.leftButton);
+    psychoJS.experiment.addData('mouse_3.midButton', mouse_3.midButton);
+    psychoJS.experiment.addData('mouse_3.rightButton', mouse_3.rightButton);
+    psychoJS.experiment.addData('mouse_3.time', mouse_3.time);
+    
     // the Routine "thankyou" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset();
     
