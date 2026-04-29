@@ -156,46 +156,6 @@ async function experimentInit() {
   });
   key_resp = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
   
-  import random
-  
-  # Get trial info from CSV
-  word_text = word
-  article_cond = article
-  correct_type = correct_type
-  obj_image_name = obj_image
-  sub_image_name = sub_image
-  
-  # Build full image paths
-  obj_path = f"obj/{obj_image_name}"
-  sub_path = f"subs/{sub_image_name}"
-  
-  # Randomize left/right position
-  if random.random() < 0.5:
-      # Object on left, substance on right
-      image_left.setImage(obj_path)
-      image_right.setImage(sub_path)
-      if correct_type == 'obj':
-          correct_response = 'f'
-      else:
-          correct_response = 'j'
-  else:
-      # Substance on left, object on right
-      image_left.setImage(sub_path)
-      image_right.setImage(obj_path)
-      if correct_type == 'sub':
-          correct_response = 'f'
-      else:
-          correct_response = 'j'
-  
-  # Build the sentence
-  if article_cond == 'a':
-      sentence_text = f"Look! A {word_text}."
-  else:
-      sentence_text = f"Look! {word_text}."
-  
-  sentence.setText(sentence_text)
-  
-  
   mouse = new core.Mouse({
     win: psychoJS.window,
   });
@@ -475,6 +435,64 @@ function trialRoutineBegin(snapshot) {
     key_resp.keys = undefined;
     key_resp.rt = undefined;
     _key_resp_allKeys = [];
+    // Run 'Begin Routine' code from logic
+    import * as random from 'random';
+    word_text = word;
+    article_cond = article;
+    target = correct_type;
+    obj_img = obj_image;
+    sub_img = sub_image;
+    phrase_type = phrase;
+    trial_kind = trial_type;
+    obj_path = `obj/${obj_img}`;
+    sub_path = `subs/${sub_img}`;
+    if ((Math.random.random() < 0.5)) {
+        image_left.setImage(obj_path);
+        image_right.setImage(sub_path);
+        if ((target === "obj")) {
+            correct_response = "f";
+            correct_side = "left";
+        } else {
+            correct_response = "j";
+            correct_side = "right";
+        }
+    } else {
+        image_left.setImage(sub_path);
+        image_right.setImage(obj_path);
+        if ((target === "sub")) {
+            correct_response = "f";
+            correct_side = "left";
+        } else {
+            correct_response = "j";
+            correct_side = "right";
+        }
+    }
+    if ((phrase_type === "look")) {
+        if ((article_cond === "a")) {
+            sentence_text = `Look! A ${word_text}.`;
+        } else {
+            sentence_text = `Look! ${word_text}.`;
+        }
+    } else {
+        if ((phrase_type === "there_is")) {
+            if ((article_cond === "a")) {
+                sentence_text = `There is a ${word_text}.`;
+            } else {
+                sentence_text = `There is ${word_text}.`;
+            }
+        } else {
+            if ((phrase_type === "that_is")) {
+                if ((article_cond === "a")) {
+                    sentence_text = `That is a ${word_text}.`;
+                } else {
+                    sentence_text = `That is ${word_text}.`;
+                }
+            }
+        }
+    }
+    sentence.setText(sentence_text);
+    mouse.clickReset();
+    
     // setup some python lists for storing info about the mouse
     // current position of the mouse:
     mouse.x = [];
@@ -657,6 +675,53 @@ function trialRoutineEnd(snapshot) {
         }
     
     key_resp.stop();
+    // Run 'End Routine' code from logic
+    left_clicked = mouse.isPressedIn(image_left);
+    right_clicked = mouse.isPressedIn(image_right);
+    if ((key_resp.keys !== null)) {
+        response = key_resp.keys;
+        rt = key_resp.rt;
+        response_method = "keyboard";
+    } else {
+        if (left_clicked) {
+            response = "f";
+            rt = mouse.getPressed()[2];
+            response_method = "mouse";
+        } else {
+            if (right_clicked) {
+                response = "j";
+                rt = mouse.getPressed()[2];
+                response_method = "mouse";
+            } else {
+                response = null;
+                rt = null;
+                response_method = "none";
+            }
+        }
+    }
+    if ((response === null)) {
+        accuracy = 0;
+    } else {
+        if ((response === correct_response)) {
+            accuracy = 1;
+        } else {
+            accuracy = 0;
+        }
+    }
+    psychoJS.experiment.addData("word", word_text);
+    psychoJS.experiment.addData("article", article_cond);
+    psychoJS.experiment.addData("phrase", phrase_type);
+    psychoJS.experiment.addData("trial_type", trial_kind);
+    psychoJS.experiment.addData("correct_type", target);
+    psychoJS.experiment.addData("obj_image", obj_img);
+    psychoJS.experiment.addData("sub_image", sub_img);
+    psychoJS.experiment.addData("response", response);
+    psychoJS.experiment.addData("rt", rt);
+    psychoJS.experiment.addData("response_method", response_method);
+    psychoJS.experiment.addData("correct_response", correct_response);
+    psychoJS.experiment.addData("accuracy", accuracy);
+    psychoJS.experiment.nextEntry();
+    
     // store data for psychoJS.experiment (ExperimentHandler)
     psychoJS.experiment.addData('mouse.x', mouse.x);
     psychoJS.experiment.addData('mouse.y', mouse.y);
