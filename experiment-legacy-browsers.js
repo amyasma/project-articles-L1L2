@@ -66,6 +66,9 @@ psychoJS.start({
 
 psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.INFO);
 
+
+var currentLoop;
+var frameDur;
 async function updateInfo() {
   currentLoop = psychoJS.experiment;  // right now there are no loops
   expInfo['date'] = util.MonotonicClock.getDateStr();  // add a simple timestamp
@@ -93,6 +96,23 @@ async function updateInfo() {
   return Scheduler.Event.NEXT;
 }
 
+
+var instructionClock;
+var Welcome;
+var start_key;
+var mouse_2;
+var trialClock;
+var sentence;
+var image_left;
+var image_right;
+var key_resp;
+var mouse;
+var thankyouClock;
+var thankyou_text;
+var end_key;
+var mouse_3;
+var globalClock;
+var routineTimer;
 async function experimentInit() {
   // Initialize components for Routine "instruction"
   instructionClock = new util.Clock();
@@ -187,6 +207,15 @@ async function experimentInit() {
   return Scheduler.Event.NEXT;
 }
 
+
+var t;
+var frameN;
+var continueRoutine;
+var instructionMaxDurationReached;
+var _start_key_allKeys;
+var gotValidClick;
+var instructionMaxDuration;
+var instructionComponents;
 function instructionRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -227,6 +256,10 @@ function instructionRoutineBegin(snapshot) {
   }
 }
 
+
+var prevButtonState;
+var _mouseButtons;
+var _mouseXYs;
 function instructionRoutineEachFrame() {
   return async function () {
     //--- Loop for each frame of Routine 'instruction' ---
@@ -322,6 +355,7 @@ function instructionRoutineEachFrame() {
   };
 }
 
+
 function instructionRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'instruction' ---
@@ -362,6 +396,8 @@ function instructionRoutineEnd(snapshot) {
   }
 }
 
+
+var trials_loop;
 function trials_loopLoopBegin(trials_loopLoopScheduler, snapshot) {
   return async function() {
     TrialHandler.fromSnapshot(snapshot); // update internal variables (.thisN etc) of the loop
@@ -392,6 +428,7 @@ function trials_loopLoopBegin(trials_loopLoopScheduler, snapshot) {
   }
 }
 
+
 async function trials_loopLoopEnd() {
   // terminate loop
   psychoJS.experiment.removeLoop(trials_loop);
@@ -402,6 +439,7 @@ async function trials_loopLoopEnd() {
     currentLoop = psychoJS.experiment;  // so we use addData from the experiment
   return Scheduler.Event.NEXT;
 }
+
 
 function trials_loopLoopEndIteration(scheduler, snapshot) {
   // ------Prepare for next entry------
@@ -420,6 +458,23 @@ function trials_loopLoopEndIteration(scheduler, snapshot) {
   };
 }
 
+
+var trialMaxDurationReached;
+var _key_resp_allKeys;
+var word_text;
+var article_cond;
+var target;
+var obj_img;
+var sub_img;
+var phrase_type;
+var trial_kind;
+var obj_path;
+var sub_path;
+var correct_response;
+var correct_side;
+var sentence_text;
+var trialMaxDuration;
+var trialComponents;
 function trialRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -436,7 +491,6 @@ function trialRoutineBegin(snapshot) {
     key_resp.rt = undefined;
     _key_resp_allKeys = [];
     // Run 'Begin Routine' code from logic
-    import * as random from 'random';
     word_text = word;
     article_cond = article;
     target = correct_type;
@@ -444,9 +498,9 @@ function trialRoutineBegin(snapshot) {
     sub_img = sub_image;
     phrase_type = phrase;
     trial_kind = trial_type;
-    obj_path = `obj/${obj_img}`;
-    sub_path = `subs/${sub_img}`;
-    if ((Math.random.random() < 0.5)) {
+    obj_path = ("obj/" + obj_img);
+    sub_path = ("subs/" + sub_img);
+    if ((Math.random() < 0.5)) {
         image_left.setImage(obj_path);
         image_right.setImage(sub_path);
         if ((target === "obj")) {
@@ -469,23 +523,23 @@ function trialRoutineBegin(snapshot) {
     }
     if ((phrase_type === "look")) {
         if ((article_cond === "a")) {
-            sentence_text = `Look! A ${word_text}.`;
+            sentence_text = (("Look! A " + word_text) + ".");
         } else {
-            sentence_text = `Look! ${word_text}.`;
+            sentence_text = (("Look! " + word_text) + ".");
         }
     } else {
         if ((phrase_type === "there_is")) {
             if ((article_cond === "a")) {
-                sentence_text = `There is a ${word_text}.`;
+                sentence_text = (("There is a " + word_text) + ".");
             } else {
-                sentence_text = `There is ${word_text}.`;
+                sentence_text = (("There is " + word_text) + ".");
             }
         } else {
             if ((phrase_type === "that_is")) {
                 if ((article_cond === "a")) {
-                    sentence_text = `That is a ${word_text}.`;
+                    sentence_text = (("That is a " + word_text) + ".");
                 } else {
-                    sentence_text = `That is ${word_text}.`;
+                    sentence_text = (("That is " + word_text) + ".");
                 }
             }
         }
@@ -520,6 +574,7 @@ function trialRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function trialRoutineEachFrame() {
   return async function () {
@@ -654,6 +709,13 @@ function trialRoutineEachFrame() {
   };
 }
 
+
+var left_clicked;
+var right_clicked;
+var response;
+var rt;
+var response_method;
+var accuracy;
 function trialRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'trial' ---
@@ -742,6 +804,11 @@ function trialRoutineEnd(snapshot) {
   }
 }
 
+
+var thankyouMaxDurationReached;
+var _end_key_allKeys;
+var thankyouMaxDuration;
+var thankyouComponents;
 function thankyouRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
@@ -781,6 +848,7 @@ function thankyouRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
 
 function thankyouRoutineEachFrame() {
   return async function () {
@@ -877,6 +945,7 @@ function thankyouRoutineEachFrame() {
   };
 }
 
+
 function thankyouRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'thankyou' ---
@@ -917,12 +986,14 @@ function thankyouRoutineEnd(snapshot) {
   }
 }
 
+
 function importConditions(currentLoop) {
   return async function () {
     psychoJS.importAttributes(currentLoop.getCurrentTrial());
     return Scheduler.Event.NEXT;
     };
 }
+
 
 async function quitPsychoJS(message, isCompleted) {
   // Check for and save orphaned data
